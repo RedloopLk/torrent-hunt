@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "generate-client": "openapi --input openApi.yaml --output ../client/types --client fetch",
+    "generate-client": "openapi --input openApi.yaml --output ../client/types/api --client fetch",
     "generate-server": "openapi-typescript openApi.yaml --output ../Api/src/types/types.ts"
   },
   "author": "thiwanka",
