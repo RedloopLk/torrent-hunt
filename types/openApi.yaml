@@ -1,0 +1,449 @@
+openapi: 3.0.3
+info:
+  title: Torrent-Hunt API
+  # This YAML file defines an advanced RESTful API for managing movie downloads, searches, and streaming.
+  # It also supports seamless integration with external services such as Google Drive and torrent networks.
+  description: |
+    RESTful API for comprehensive management of movie downloads, searches, streaming, 
+    and seamless integration with external services such as Google Drive and torrent networks.
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: thiwankasandakalum@gmail.com
+
+servers:
+  - url: https://api.torrenthunt.com/v1
+    description: Production server
+  - url: https://staging.api.torrenthunt.com/v1
+    description: Staging server
+
+tags:
+  - name: Movies
+    description: Operations related to movies
+  - name: Downloads
+    description: Operations related to movie downloads
+  - name: Streaming
+    description: Operations related to movie streaming
+  - name: Status
+    description: Operations related to download status
+
+paths:
+  /movies:
+    get:
+      tags:
+        - Movies
+      summary: Get popular movies
+      description: Retrieve a list of popular movies from an external API.
+      operationId: getPopularMovies
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          description: The number of results to return (default is 10).
+          schema:
+            type: integer
+            default: 10
+        - name: page
+          in: query
+          required: false
+          description: The page number for pagination.
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: A list of popular movies.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  movies:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Movie"
+        "500":
+          description: Internal server error.
+  /movies/search:
+    get:
+      tags:
+        - Movies
+      summary: Search for movies
+      description: Search for movies by title or other keywords using an external API.
+      operationId: searchMovies
+      parameters:
+        - name: query
+          in: query
+          required: true
+          description: The search query string.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          description: The number of results to return (default is 10).
+          schema:
+            type: integer
+            default: 10
+        - name: page
+          in: query
+          required: false
+          description: The page number for pagination.
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: Successful movie search results.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  movies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        title:
+                          type: string
+                        description:
+                          type: string
+                        release_date:
+                          type: string
+                        rating:
+                          type: number
+        "400":
+          description: Invalid request parameters.
+        "500":
+          description: Internal server error.
+
+  /movies/{id}:
+    get:
+      tags:
+        - Movies
+      summary: Get movie details
+      description: Retrieve detailed information about a specific movie.
+      operationId: getMovie
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the movie.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Movie details.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Movie"
+        "404":
+          description: Movie not found.
+        "500":
+          description: Internal server error.
+
+  /movies/download:
+    post:
+      tags:
+        - Downloads
+      summary: Initiate a torrent download
+      description: Trigger the downloading of a movie using a torrent magnet link or uploaded `.torrent` file.
+      operationId: downloadMovie
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - magnet_link
+              properties:
+                magnet_link:
+                  type: string
+                  description: The torrent magnet link.
+
+            example:
+              magnet_link: "magnet:?xt=urn:btih:<hash>"
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Upload a `.torrent` file.
+      responses:
+        "202":
+          description: Download task successfully queued.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task_id:
+                    type: string
+                    description: The ID of the queued task.
+        "400":
+          description: Invalid input.
+        "500":
+          description: Internal server error.
+
+  /movies/downloads:
+    get:
+      tags:
+        - Downloads
+      summary: Get downloaded movies
+      description: Retrieve a list of downloaded movies.
+      operationId: getDownloadedMovies
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          description: The number of results to return (default is 10).
+          schema:
+            type: integer
+            default: 10
+        - name: page
+          in: query
+          required: false
+          description: The page number for pagination.
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: A list of downloaded movies.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  movies:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Movie"
+        "500":
+          description: Internal server error.
+
+    delete:
+      tags:
+        - Downloads
+      summary: Delete downloaded movies
+      description: Delete downloaded movies from the server.
+      operationId: deleteDownloadedMovies
+      responses:
+        "204":
+          description: Movies deleted successfully.
+        "500":
+          description: Internal server error.
+
+  /movies/downloads/{id}:
+    get:
+      tags:
+        - Downloads
+      summary: Get downloaded movie
+      description: Retrieve a specific downloaded movie.
+      operationId: getDownloadedMovie
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the downloaded movie.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The downloaded movie.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Movie"
+        "404":
+          description: Movie not found.
+        "500":
+          description: Internal server error.
+
+    delete:
+      tags:
+        - Downloads
+      summary: Delete downloaded movie
+      description: Delete a specific downloaded movie from the server.
+      operationId: deleteDownloadedMovie
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the downloaded movie.
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Movie deleted successfully.
+        "404":
+          description: Movie not found.
+        "500":
+          description: Internal server error.
+
+  /movies/stream/{id}:
+    get:
+      tags:
+        - Streaming
+      summary: Stream a movie
+      description: Stream a movie directly from the server or from Google Drive.
+      operationId: streamMovie
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the movie to stream.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The movie stream.
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: Movie not found.
+        "500":
+          description: Internal server error.
+
+  /status/{id}:
+    get:
+      tags:
+        - Status
+      summary: Check download status
+      description: Retrieve the current status of a download or task.
+      operationId: checkStatus
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the download task.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The current status of the task.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task_id:
+                    type: string
+                  status:
+                    type: string
+                    enum: [pending, in_progress, completed, failed, cancelled]
+                  details:
+                    type: string
+        "404":
+          description: Task not found.
+        "500":
+          description: Internal server error.
+    post:
+      tags:
+        - Status
+      summary: Cancel download task
+      description: Cancel a download task.
+      operationId: cancelTask
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the download task.
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Task cancelled successfully.
+        "404":
+          description: Task not found.
+        "500":
+          description: Internal server error.
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Movie:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the movie.
+        thumbnail:
+          type: string
+          description: The URL of the movie's thumbnail image.
+        title:
+          type: string
+          description: The title of the movie.
+        description:
+          type: string
+          description: A brief description of the movie.
+        release_date:
+          type: string
+          format: date
+          description: The release date of the movie.
+        rating:
+          type: number
+          format: float
+          description: The rating of the movie.
+        genre:
+          type: string
+          description: The genre of the movie.
+        director:
+          type: string
+          description: The director of the movie.
+        cast:
+          type: array
+          items:
+            type: string
+            description: The name of a cast member.
+          description: The list of cast members.
+        duration:
+          type: string
+          description: The duration of the movie.
+        language:
+          type: string
+          description: The language of the movie.
+
+    Status:
+      type: object
+      properties:
+        task_id:
+          type: string
+          description: The unique identifier of the task.
+        status:
+          type: string
+          enum: [pending, in_progress, completed, failed, cancelled]
+          description: The current status of the task.
+        details:
+          type: string
+          description: Additional details about the task status.
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+security:
+  - bearerAuth: []
+
+externalDocs:
+  description: YTS API documentation
+  url: https://yts.mx/api
