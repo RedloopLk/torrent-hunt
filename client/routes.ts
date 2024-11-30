@@ -1,11 +1,12 @@
+// routes.ts
 import HomePage from '@/pages/home-page';
-import {RouteConfig} from '@/types'
+import NotFoundPage from '@/pages/not-found';
+import { RouteConfig } from '@/types';
 
-
-// Route Constants
 export const RoutePaths = {
   HOME: '/',
   ABOUT: '/about',
+  NOT_FOUND: '*',
   AUTH: {
     LOGIN: '/login',
     REGISTER: '/register',
@@ -17,25 +18,16 @@ export const RoutePaths = {
   },
 } as const;
 
-// Route Configuration
 export const routesConfig: RouteConfig[] = [
   {
     path: RoutePaths.HOME,
     title: 'Home',
     element: HomePage,
+    isProtected: true,
   },
+  {
+    path: RoutePaths.NOT_FOUND,
+    title: 'Not Found',
+    element: NotFoundPage,
+  }
 ];
-
-// Utility function to convert route config to React Router format
-// export const flattenRoutes = (routes: RouteConfig[]): JSX.Element[] => {
-//   return routes.map((route) => {
-//     if ('children' in route) {
-//       return (
-//         <Route key={route.path} path={route.path} element={route.element}>
-//           {flattenRoutes(route.children)}
-//         </Route>
-//       );
-//     }
-//     return <Route key={route.path} path={route.path} element={<route.element />} />;
-//   });
-// };
