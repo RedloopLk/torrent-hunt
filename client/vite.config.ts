@@ -1,13 +1,10 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tsconfigPaths from 'vite-tsconfig-paths'
-import { resolve } from 'path'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import tsconfigPaths from 'vite-tsconfig-paths';
+import { resolve } from 'path';
 
 export default defineConfig({
-  plugins: [
-    react(),
-    tsconfigPaths()
-  ],
+  plugins: [react(), tsconfigPaths()],
   resolve: {
     alias: {
       '@': resolve(__dirname, '.'),
@@ -15,15 +12,21 @@ export default defineConfig({
       '@/lib': resolve(__dirname, './lib'),
       '@/hooks': resolve(__dirname, './hooks'),
       '@/pages': resolve(__dirname, './pages'),
-      '@/app': resolve(__dirname, './app')
-    }
+      '@/app': resolve(__dirname, './app'),
+      '@/config': resolve(__dirname, './config'),
+    },
   },
   server: {
     port: 3000,
-    open: true
+    open: true,
   },
   build: {
     outDir: 'dist',
-    sourcemap: true
-  }
-})
+    sourcemap: true,
+  },
+  define: {
+    'import.meta.env.VITE_APP_VERSION': JSON.stringify(
+      process.env.npm_package_version
+    ),
+  },
+});

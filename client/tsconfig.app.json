@@ -32,8 +32,10 @@
       "@/lib/*": ["./lib/*"],
       "@/hooks/*": ["./hooks/*"],
       "@/pages/*": ["./pages/*"],
-      "@/app/*": ["./app/*"]
-    }
+      "@/app/*": ["./app/*"],
+      "@/config/*": ["./config/*"]
+    },
+    "typeRoots": ["/types"]
   },
   "include": [
     "app/**/*.ts",
@@ -47,10 +49,9 @@
     "pages/**/*.ts",
     "pages/**/*.tsx",
     "types/**/*.ts",
-    "types/**/*.tsx"
-, "routes.ts"  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+    "types/**/*.tsx",
+    "routes.ts",
+    "config/**/*.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
 }
