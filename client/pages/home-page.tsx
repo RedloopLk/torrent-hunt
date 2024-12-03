@@ -1,12 +1,12 @@
-import ConfigService from '@/config/config-service';
+import { User } from '@auth0/auth0-react';
+import { FC } from 'react';
 
-export default function HomePage() {
-  const config = ConfigService.getInstance().config;
-
+const HomePage: FC<User> = ({ name }) => {
   return (
     <div>
-      <p>home page</p>
-      <p>env : {config.AUTH0_DOMAIN}</p>
+      <h1>Hey , {name}</h1>
     </div>
   );
-}
+};
+
+export default HomePage;

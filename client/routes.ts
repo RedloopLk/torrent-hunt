@@ -1,41 +1,46 @@
 import HomePage from '@/pages/home-page';
-import {RouteConfig} from '@/types'
+import NotFoundPage from '@/pages/not-found';
+import { RouteConfig } from '@/types';
+import DriveCallbackPage from './pages/drive-callback';
+import SignInPage from './pages/auth-page';
 
-
-// Route Constants
 export const RoutePaths = {
   HOME: '/',
-  ABOUT: '/about',
+  // ABOUT: '/about',
+  NOT_FOUND: '*',
   AUTH: {
-    LOGIN: '/login',
-    REGISTER: '/register',
+    SIGNIN: '/sign-in',
   },
   CONCERTS: {
     ROOT: '/concerts',
     CITY: '/concerts/:city',
     TRENDING: '/concerts/trending',
   },
+  DRIVECALLBACK: '/callback',
 } as const;
 
-// Route Configuration
 export const routesConfig: RouteConfig[] = [
   {
     path: RoutePaths.HOME,
     title: 'Home',
     element: HomePage,
+    isProtected: true,
+  },
+  {
+    path: RoutePaths.NOT_FOUND,
+    title: 'Not Found',
+    element: NotFoundPage,
+    isProtected: false,
+  },
+  {
+    path: RoutePaths.AUTH.SIGNIN,
+    title: 'Sign In',
+    element: SignInPage,
+    isProtected: false,
+  },
+  {
+    path: RoutePaths.DRIVECALLBACK,
+    title: 'Google Drive Access',
+    element: DriveCallbackPage,
   },
 ];
-
-// Utility function to convert route config to React Router format
-// export const flattenRoutes = (routes: RouteConfig[]): JSX.Element[] => {
-//   return routes.map((route) => {
-//     if ('children' in route) {
-//       return (
-//         <Route key={route.path} path={route.path} element={route.element}>
-//           {flattenRoutes(route.children)}
-//         </Route>
-//       );
-//     }
-//     return <Route key={route.path} path={route.path} element={<route.element />} />;
-//   });
-// };

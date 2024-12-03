@@ -1,5 +1,6 @@
+import { RouteElement } from '@/components/elements';
+import { wrapRoute } from '@/components/wrappers';
 import { RouteConfig } from '@/types';
-import { ReactNode } from 'react';
 import { Route } from 'react-router';
 
 export const flattenRoutes = (routes: RouteConfig[]): JSX.Element[] => {
@@ -9,14 +10,14 @@ export const flattenRoutes = (routes: RouteConfig[]): JSX.Element[] => {
         <Route
           key={route.path}
           path={route.path}
-          element={route.element as ReactNode}
+          element={
+            route.element ? <RouteElement Component={route.element} /> : null
+          }
         >
           {flattenRoutes(route.children)}
         </Route>
       );
     }
-    return (
-      <Route key={route.path} path={route.path} element={<route.element />} />
-    );
+    return wrapRoute(route);
   });
 };

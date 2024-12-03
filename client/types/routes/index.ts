@@ -13,7 +13,7 @@ export interface RouteLeaf extends RouteBase {
 }
 
 export interface RouteBranch extends RouteBase {
-  element?: ComponentType;
+  element: ComponentType;
   children: RouteConfig[];
 }
 
