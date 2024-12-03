@@ -10,6 +10,7 @@ const ConfigSchema = z.object({
     .default('development'),
   AUTH0_IDENTIFIER: z.string().min(1, 'Auth0 audience is required'),
   GOOGLE_CLIENT_ID: z.string().min(1, 'Google client ID is required'),
+  API_BASE_URL: z.string().url('Must be a valid URL'),
 });
 
 // Infer the type from the schema
@@ -24,6 +25,7 @@ const loadConfig = (): Config => {
     APP_ENVIRONMENT: import.meta.env.VITE_APP_ENVIRONMENT || 'development',
     AUTH0_IDENTIFIER: import.meta.env.VITE_AUTH_IDENTIFIER,
     GOOGLE_CLIENT_ID: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+    API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
   };
 
   try {

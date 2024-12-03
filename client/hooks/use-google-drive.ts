@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { getGoogleAuthUrl } from '../lib/utils';
+import { config } from '@/config';
 
 interface GoogleOAuthCallbackEvent extends MessageEvent {
   data: {
@@ -27,20 +28,27 @@ export const useGoogleDriveLink = (): UseGoogleDriveLinkReturn => {
 
   const handleOAuthCallback = useCallback(
     async (event: MessageEvent) => {
+      // Add origin check for security
+      if (event.origin !== window.location.origin) return;
+
       const oauthEvent = event as GoogleOAuthCallbackEvent;
+
+      const code = oauthEvent.data.code;
 
       if (oauthEvent.data.type === 'GOOGLE_OAUTH_CALLBACK') {
         try {
           const token = await getAccessTokenSilently();
-
-          const response = await fetch('/api/link-google-drive', {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ code: oauthEvent.data.code }),
-          });
+          const response = await fetch(
+            `${config.API_BASE_URL}/api/drive/link-google-drive`,
+            {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ code }),
+            }
+          );
 
           const data: GoogleDriveResponse = await response.json();
 
@@ -72,10 +80,16 @@ export const useGoogleDriveLink = (): UseGoogleDriveLinkReturn => {
       setIsLinking(true);
       setError(null);
 
+      const width = 500;
+      const height = 600;
+
+      const left = window.screen.width / 2 - width / 2;
+      const top = window.screen.height / 2 - height / 2;
+
       const popup = window.open(
         getGoogleAuthUrl(),
         'Google Drive Authorization',
-        'width=500,height=600'
+        `width=${width},height=${height},top=${top},left=${left}`
       );
 
       if (!popup) {
