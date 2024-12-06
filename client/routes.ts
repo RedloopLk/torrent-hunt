@@ -24,7 +24,7 @@ export const routesConfig: RouteConfig[] = [
     path: RoutePaths.HOME,
     title: 'Home',
     element: HomePage,
-    isProtected: true,
+    isProtected: false,
   },
   {
     path: RoutePaths.NOT_FOUND,

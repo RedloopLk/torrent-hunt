@@ -18,7 +18,7 @@ export default function Layout({ children }: PropsWithChildren) {
         }}
       >
         <ThemeProvider defaultTheme="dark" storageKey="theme">
-          <ModeToggle />
+          {/* <ModeToggle /> */}
           {children}
         </ThemeProvider>
       </Auth0Provider>
