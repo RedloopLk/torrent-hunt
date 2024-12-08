@@ -27,3 +27,8 @@ dist-ssr
 
 # env
 .env
+
+
+#lock files
+pnpm-lock.yaml
+package-lock.json
