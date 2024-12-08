@@ -9,7 +9,7 @@ export default function AuthPage() {
     if (!isAuthenticated) {
       loginWithRedirect({
         authorizationParams: {
-          redirect_uri: window.location.origin + '/callback',
+          redirect_uri: window.location.origin,
         },
       });
     }
