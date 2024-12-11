@@ -1,40 +1,66 @@
-import Image from '@/components/common/image';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { FC, PropsWithChildren } from 'react';
+import { useState } from "react";
 
-export const HeroSection: FC = () => (
-  <Wrapper>
-    <section className=" bg-gradient-custom/60 backdrop-blur-md m-auto w-full p-8 text-white">
-      <div className="mx-auto w-full space-y-4 text-center sm:max-w-2xl">
-        <h1 className="text-4xl font-bold">Find Your Favorite Movies</h1>
-        <p className="text-lg opacity-90">
-          Paste your magnet link below to start downloading
-        </p>
-        <div className="flex gap-2">
-          <Input
-            placeholder="Paste magnet link here..."
-            className="border-white/20 bg-white/10 text-white placeholder:text-white/60"
+export default function HeroSection() {
+  const [torrentLink, setTorrentLink] = useState("");
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTorrentLink(e.target.value);
+  };
+
+  const handleDownloadClick = () => {
+    alert("Download started for: " + torrentLink);
+  };
+
+  return (
+    <div className="h-screen flex flex-col items-center justify-center bg-white ">
+     
+      <h1 className="text-6xl font-bold text-gray-800 mb-6">
+        Torrent Hunt
+      </h1>
+      <p className="text-1xl text-gray-800 mb-6 w-[80%] text-center">
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing
+      </p>
+
+
+      <div className="w-full max-w-lg">
+        <div className="flex items-center border border-gray-300 rounded-full shadow-md p-2">
+          <label className="flex items-center justify-center m-2 cursor-pointer">
+            <input type="file" className="hidden" />
+            <span className="items-center text-xl font-bold text-gray-700">+</span>
+          </label>
+          <input
+            type="text"
+            placeholder="Paste torrent link here"
+            className="flex-grow outline-none px-4 py-2 text-gray-700"
+            value={torrentLink}
+            onChange={handleInputChange}
           />
-          <Button variant="secondary">Download</Button>
+          <button
+            onClick={handleDownloadClick}
+            className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition"
+          >
+            Download
+          </button>
         </div>
       </div>
-    </section>
-  </Wrapper>
-);
 
-const Wrapper: FC<PropsWithChildren> = ({ children }) => {
-  return (
-    <div className="relative w-full aspect-[3/1] flex flex-col justify-end">
-      <Image
-        src={`https://img.freepik.com/free-photo/fantasy-group-adventurers_23-2151470689.jpg?t=st=1733657731~exp=1733661331~hmac=1a06d5cf7c569c4b2c59f403ba5c4dd064c84e788f38af34ebde7a334cfda992&w=1380`}
-        alt={`Movie`}
-        width={600}
-        height={400}
-        cacheKey="https://img.freepik.com/free-photo/fantasy-group-adventurers_23-2151470689.jpg?t=st=1733657731~exp=1733661331~hmac=1a06d5cf7c569c4b2c59f403ba5c4dd064c84e788f38af34ebde7a334cfda992&w=1380"
-        className="absolute bottom-0 left-0 right-0 top-0 h-full w-full object-cover"
-      />
-      <div className='z-0 relative'>{children}</div>
+      <div className="w-screen mt-10">
+        <h2 className="text-xl font-medium text-gray-800 m-4">
+          Latest Movies
+        </h2>
+        <div className="flex overflow-x-scroll space-x-4 scrollbar-hidden">
+          {["Movie 1", "Movie 2", "Movie 3", "Movie 4", "Movie 5", "Movie 3", "Movie 4", "Movie 5", "Movie 3", "Movie 4", "Movie 5"].map(
+            (movie, index) => (
+              <div
+                key={index}
+                className="w-40 h-60 bg-gray-200 flex-shrink-0 rounded-lg shadow-md flex items-center justify-center text-gray-700"
+              >
+                {movie}
+              </div>
+            )
+          )}
+        </div>
+      </div>
     </div>
   );
-};
+}

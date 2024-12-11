@@ -17,7 +17,7 @@ export function Header() {
             <Button variant="ghost" asChild>
               <a href="/login">Login</a>
             </Button>
-            <ModeToggle />
+            {/* <ModeToggle /> */}
           </nav>
         </div>
       </div>

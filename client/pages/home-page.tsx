@@ -1,7 +1,5 @@
-import { LatestMovies } from '@/components/common/latest-movies';
-import { SuggestedMovies } from '@/components/common/suggested-movies';
-import { HeroSection } from '@/components/pages/home/hero-section';
-import { Button } from '@/components/ui/button';
+
+import  HeroSection  from '@/components/pages/home/hero-section';
 import { useAuth0, User } from '@auth0/auth0-react';
 import { FC, useEffect } from 'react';
 
@@ -21,16 +19,16 @@ const HomePage: FC<User> = () => {
   }, []);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 ">
       {/* Hero Section with Magnet Input */}
-      <Button onClick={() => logout()}>LOGOUT</Button>
-      <HeroSection />
+      {/* <Button onClick={() => logout()}>LOGOUT</Button> */}
+      <HeroSection/>
 
       {/* Suggested Movies Slider */}
-      <SuggestedMovies />
+      {/* <SuggestedMovies /> */}
 
       {/* Latest Movies Grid */}
-      <LatestMovies />
+      {/* <LatestMovies /> */}
     </div>
   );
 };

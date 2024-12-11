@@ -88,5 +88,18 @@ module.exports = {
       );
       addUtilities(utilities);
     },
+
+    // Custom plugin for scrollbar-hidden utility
+    function ({ addUtilities }) {
+      addUtilities({
+        '.scrollbar-hidden': {
+          '-ms-overflow-style': 'none',  // Internet Explorer 10+
+          'scrollbar-width': 'none',     // Firefox
+          '&::-webkit-scrollbar': {
+            display: 'none',             // Safari and Chrome
+          },
+        },
+      });
+    },
   ],
 };
