@@ -3,10 +3,11 @@ import NotFoundPage from '@/pages/not-found';
 import { RouteConfig } from '@/types';
 import DriveCallbackPage from './pages/drive-callback';
 import SignInPage from './pages/auth-page';
+import DashboardPage from './pages/dashboard-page';
 
 export const RoutePaths = {
   HOME: '/',
-  // ABOUT: '/about',
+  DASHBOARD: '/dashboard',
   NOT_FOUND: '*',
   AUTH: {
     SIGNIN: '/sign-in',
@@ -36,6 +37,12 @@ export const routesConfig: RouteConfig[] = [
     path: RoutePaths.AUTH.SIGNIN,
     title: 'Sign In',
     element: SignInPage,
+    isProtected: false,
+  },
+  {
+    path: RoutePaths.DASHBOARD,
+    title: 'Sign In',
+    element: DashboardPage,
     isProtected: false,
   },
   {

@@ -1,4 +1,4 @@
-import { ModeToggle } from '@/components/common/theme-toggle';
+// import { ModeToggle } from '@/components/common/theme-toggle';
 import { config } from '@/config';
 import { ThemeProvider } from '@/providers/theme-provider';
 import { Auth0Provider } from '@auth0/auth0-react';
@@ -18,7 +18,7 @@ export default function Layout({ children }: PropsWithChildren) {
         }}
       >
         <ThemeProvider defaultTheme="dark" storageKey="theme">
-          <ModeToggle />
+          {/* <ModeToggle /> */}
           {children}
         </ThemeProvider>
       </Auth0Provider>
