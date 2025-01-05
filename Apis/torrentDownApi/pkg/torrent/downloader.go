@@ -41,10 +41,10 @@ func (tc *TorrentClient) DownloadMagnet(magnetLink string) error {
 // DownloadTorrentToGoogleDrive downloads a torrent and uploads to Google Drive
 func DownloadTorrentToGoogleDrive(magnetLink string, driveToken string) error {
 	// Initialize Google Drive client
-	// driveService, err := initializeGoogleDriveClient(driveToken)
-	// if err != nil {
-	// 	return fmt.Errorf("failed to initialize Google Drive client: %w", err)
-	// }
+	driveService, err := initializeGoogleDriveClient(driveToken)
+	if err != nil {
+		return fmt.Errorf("failed to initialize Google Drive client: %w", err)
+	}
 
 	// Torrent client setup
 	clientConfig := torrent.NewDefaultClientConfig()
@@ -63,10 +63,10 @@ func DownloadTorrentToGoogleDrive(magnetLink string, driveToken string) error {
 	<-t.GotInfo() // Wait for torrent metadata
 
 	// Create folder in Google Drive
-	// driveFolder, err := createDriveFolder(driveService, t.Name(), driveToken)
-	// if err != nil {
-	// 	return err
-	// }
+	driveFolder, err := createDriveFolder(driveService, t.Name(), "1yBBgdWjmrtP915I101IH-PFrkbd8FHPi")
+	if err != nil {
+		return err
+	}
 
 	// Define tempDir using the Docker volume
 	tempDir := "/root/temp"
@@ -101,11 +101,13 @@ func DownloadTorrentToGoogleDrive(magnetLink string, driveToken string) error {
 	}
 
 	// Upload the downloaded files to Google Drive
-	// for _, file := range t.Files() {
-	// 	// Upload the file to Google Drive
-	// 	err := uploadFileToGoogleDrive(driveService, file, tempDir, driveFolder.Id)
-	// 	if err != nil {
-	// 		return fmt.Errorf("failed to upload file to Google Drive: %w", err)
+	for index, file := range t.Files() {
+		// Upload the file to Google Drive
+		err := uploadFileToGoogleDrive(driveService, index, file, tempDir, driveFolder.Id)
+		if err != nil {
+			return fmt.Errorf("failed to upload file to Google Drive: %w", err)
+		}
+	}
 	// Temporary directory will be cleaned up by deferred call to os.RemoveAll
 	err = os.RemoveAll(tempDir)
 	if err != nil {
@@ -152,7 +154,7 @@ func createDriveFolder(driveService *drive.Service, folderName, parentFolderID s
 }
 
 // uploadFileToGoogleDrive uploads a torrent file to Google Drive
-func uploadFileToGoogleDrive(svc *drive.Service, tf *torrent.File, tempDir, folderID string) error {
+func uploadFileToGoogleDrive(svc *drive.Service, index int, tf *torrent.File, tempDir, folderID string) error {
 	localFilePath := filepath.Join(tempDir, tf.Path())
 	// Ensure the directory exists
 	if err := os.MkdirAll(filepath.Dir(localFilePath), os.ModePerm); err != nil {
@@ -172,7 +174,9 @@ func uploadFileToGoogleDrive(svc *drive.Service, tf *torrent.File, tempDir, fold
 	}
 
 	// Create a MediaUpload request
-	uploadRequest := svc.Files.Create(driveFile).Media(file)
+
+	reader := tf.NewReader()
+	uploadRequest := svc.Files.Create(driveFile).Media(reader)
 
 	// Upload the file in chunks with progress reporting
 	fileInfo, err := file.Stat()
